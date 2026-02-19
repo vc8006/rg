@@ -2,12 +2,12 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://yourairgunshop.com',
-  output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  output: 'hybrid',
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss()]
   },
