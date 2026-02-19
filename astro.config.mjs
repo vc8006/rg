@@ -6,7 +6,7 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://yourairgunshop.com',
-  output: 'hybrid',
+  output: 'static',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()]
