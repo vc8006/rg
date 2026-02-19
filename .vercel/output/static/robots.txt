@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-
-Sitemap: https://yourairgunshop.com/sitemap-index.xml
