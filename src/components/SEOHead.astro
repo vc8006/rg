@@ -8,7 +8,8 @@ interface Props {
   schema?: object;
 }
 
-import shopInfo from '../data/shop-info.json';
+import { getData } from '../lib/data';
+const shopInfo = await getData('shop-info');
 
 const { title, description, image = '/images/hero-rifle.png', url = Astro.url.href, type = 'website', schema } = Astro.props;
 const fullTitle = `${title} | ${shopInfo.name}`;

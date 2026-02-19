@@ -1,5 +1,6 @@
 ---
-import shopInfo from '../data/shop-info.json';
+import { getData } from '../lib/data';
+const shopInfo = await getData('shop-info');
 const yr = new Date().getFullYear();
 ---
 

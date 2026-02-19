@@ -1,0 +1,34 @@
+import { f as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DfccWZr5.mjs';
+import 'piccolore';
+import { $ as $$BaseLayout } from '../chunks/BaseLayout_7A3Fm1_F.mjs';
+import { g as getData } from '../chunks/data_bRGoF-Yz.mjs';
+export { renderers } from '../renderers.mjs';
+
+const prerender = false;
+const $$About = createComponent(async ($$result, $$props, $$slots) => {
+  const shopInfo = await getData("shop-info");
+  return renderTemplate`${renderComponent($$result, "BaseLayout", $$BaseLayout, { "title": "About Us", "description": "Learn more about our journey, passion, and commitment to quality airguns." }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<section class="bg-bg-alt border-b border-border"> <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8"> <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-brass mb-1">Our Story</p> <h1 class="text-2xl font-bold text-heading tracking-tight mb-1">About ${shopInfo.name}</h1> <p class="text-muted text-sm">Built on passion, trust, and years of hands-on experience with airguns.</p> </div> </section> <section> <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"> <div class="grid lg:grid-cols-5 gap-10"> <div class="lg:col-span-3 space-y-5"> <p class="text-body leading-relaxed">Welcome to <strong class="text-heading">${shopInfo.name}</strong> — your one-stop destination for premium airguns, pellets, and shooting accessories. Founded by passionate shooting enthusiasts, we started with a simple mission: to bring the best quality airguns to Indian shooters at fair prices.</p> <p class="text-body leading-relaxed">What began as a small hobby-driven venture has grown into a trusted name in the airgun community. Our team has years of hands-on experience with air rifles and pistols, and we use that expertise to help every customer find the perfect match for their needs — whether it's for sport shooting, pest control, or starting a new hobby.</p> <p class="text-body leading-relaxed">We work directly with authorized distributors and brands like <strong class="text-heading">Precihole Sports</strong> to ensure every product we sell is 100% genuine, covered by warranty, and competitively priced. Our workshop also offers professional servicing and repairs for all major airgun brands.</p> </div> <div class="lg:col-span-2 space-y-4"> ${[
+    { label: "Our Mission", text: "To make quality shooting sports accessible to everyone in India with genuine products and expert guidance." },
+    { label: "Our Promise", text: "Every airgun we sell is sourced from authorized dealers, comes with full warranty, and is backed by our after-sales support." }
+  ].map((item) => renderTemplate`<div class="rounded-lg border border-border bg-bg-alt p-5"> <h3 class="text-heading text-sm font-semibold mb-2">${item.label}</h3> <p class="text-muted text-[13px] leading-relaxed">${item.text}</p> </div>`)} </div> </div> </div> </section> <section class="bg-bg-alt border-t border-border"> <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"> <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-brass mb-1">By The Numbers</p> <h2 class="text-xl font-bold text-heading tracking-tight mb-8">Our Track Record</h2> <div class="grid grid-cols-2 lg:grid-cols-4 gap-5"> ${[
+    { number: "500+", label: "Happy Customers" },
+    { number: "50+", label: "Products Available" },
+    { number: "5+", label: "Years Experience" },
+    { number: "10+", label: "Brands Available" }
+  ].map((stat) => renderTemplate`<div class="bg-card rounded-lg border border-border p-5 text-center"> <div class="text-3xl font-bold text-brand mb-1">${stat.number}</div> <div class="text-muted text-sm">${stat.label}</div> </div>`)} </div> </div> </section> <section class="border-t border-border"> <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"> <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-brass mb-1">Brands We Carry</p> <h2 class="text-xl font-bold text-heading tracking-tight mb-8">Authorized & Trusted</h2> <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"> ${["Precihole Sports", "Gamo", "Hatsan", "Diana", "BSA Guns", "Crosman"].map((b) => renderTemplate`<div class="rounded-lg border border-border bg-bg-alt flex items-center justify-center py-5 px-4 text-center"> <span class="text-heading text-sm font-semibold">${b}</span> </div>`)} </div> </div> </section> <section class="bg-dark"> <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center"> <h2 class="text-xl font-bold text-white tracking-tight mb-2">Have Questions?</h2> <p class="text-white/60 text-sm mb-5">We'd love to hear from you. Visit our shop or get in touch today.</p> <div class="flex flex-wrap justify-center gap-3"> <a href="/contact" class="bg-white text-dark px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">Contact Us</a> <a href="/products" class="border border-white/20 text-white/80 hover:text-white hover:border-white/40 px-5 py-2.5 rounded-lg text-sm font-medium transition-all">View Products</a> </div> </div> </section> ` })}`;
+}, "/Users/vedantchourasia/ag/src/pages/about.astro", void 0);
+
+const $$file = "/Users/vedantchourasia/ag/src/pages/about.astro";
+const $$url = "/about";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$About,
+  file: $$file,
+  prerender,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
