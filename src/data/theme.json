@@ -1,0 +1,9 @@
+{
+  "mode": "light",
+  "allowVisitorToggle": false,
+  "brandColor": "#1B3A2D",
+  "accentColor": "#8B6D3F",
+  "fontFamily": "Inter",
+  "borderRadius": "0.5rem",
+  "preset": "default"
+}

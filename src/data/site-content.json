@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "badge": "Authorized Dealer",
+    "title": "Premium <highlight>Airguns</highlight> & Accessories",
+    "ctaPrimary": "Browse Collection",
+    "ctaSecondary": "Get in Touch",
+    "stats": [
+      { "number": "500+", "label": "Happy Customers" },
+      { "number": "50+", "label": "Products" },
+      { "number": "5+", "label": "Years" }
+    ]
+  },
+  "whyUs": {
+    "title": "Built on Trust & Expertise",
+    "subtitle": "Why Us",
+    "features": [
+      { "title": "Genuine Products", "desc": "Every item sourced from authorized manufacturers with full warranty coverage." },
+      { "title": "Expert Guidance", "desc": "Personalized recommendations from experienced shooters for your exact needs." },
+      { "title": "Community & Support", "desc": "After-sales support, maintenance tips, and a growing enthusiast community." },
+      { "title": "Best Prices", "desc": "Competitive market pricing with regular deals, combos, and seasonal offers." },
+      { "title": "Fast Shipping", "desc": "Secure packaging and reliable logistics for safe, on-time delivery nationwide." },
+      { "title": "Service & Repairs", "desc": "Professional airgun servicing and repairs at our workshop by certified technicians." }
+    ]
+  },
+  "homeCta": {
+    "title": "Ready to Find Your Perfect Airgun?",
+    "subtitle": "Visit our shop or get in touch. Our experts will help you choose the right airgun."
+  },
+  "about": {
+    "subtitle": "Built on passion, trust, and years of hands-on experience with airguns.",
+    "paragraphs": [
+      "Welcome to <strong>{shopName}</strong> — your one-stop destination for premium airguns, pellets, and shooting accessories. Founded by passionate shooting enthusiasts, we started with a simple mission: to bring the best quality airguns to Indian shooters at fair prices.",
+      "What began as a small hobby-driven venture has grown into a trusted name in the airgun community. Our team has years of hands-on experience with air rifles and pistols, and we use that expertise to help every customer find the perfect match for their needs — whether it's for sport shooting, pest control, or starting a new hobby.",
+      "We work directly with authorized distributors and brands like <strong>Precihole Sports</strong> to ensure every product we sell is 100% genuine, covered by warranty, and competitively priced. Our workshop also offers professional servicing and repairs for all major airgun brands."
+    ],
+    "cards": [
+      { "label": "Our Mission", "text": "To make quality shooting sports accessible to everyone in India with genuine products and expert guidance." },
+      { "label": "Our Promise", "text": "Every airgun we sell is sourced from authorized dealers, comes with full warranty, and is backed by our after-sales support." }
+    ],
+    "stats": [
+      { "number": "500+", "label": "Happy Customers" },
+      { "number": "50+", "label": "Products Available" },
+      { "number": "5+", "label": "Years Experience" },
+      { "number": "10+", "label": "Brands Available" }
+    ],
+    "brands": ["Precihole Sports", "Gamo", "Hatsan", "Diana", "BSA Guns", "Crosman"]
+  },
+  "aboutCta": {
+    "title": "Have Questions?",
+    "subtitle": "We'd love to hear from you. Visit our shop or get in touch today."
+  }
+}

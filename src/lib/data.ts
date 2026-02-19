@@ -6,6 +6,8 @@ import { dirname, join } from 'node:path';
 import defaultShopInfo from '../data/shop-info.json';
 import defaultProducts from '../data/products.json';
 import defaultTestimonials from '../data/testimonials.json';
+import defaultTheme from '../data/theme.json';
+import defaultSiteContent from '../data/site-content.json';
 
 const isVercel = !!import.meta.env.VERCEL;
 const localDataDir = join(dirname(fileURLToPath(import.meta.url)), '../data');
@@ -14,12 +16,16 @@ const fileMap: Record<string, string> = {
   'shop-info': 'shop-info.json',
   'products': 'products.json',
   'testimonials': 'testimonials.json',
+  'theme': 'theme.json',
+  'site-content': 'site-content.json',
 };
 
 const defaults: Record<string, any> = {
   'shop-info': defaultShopInfo,
   'products': defaultProducts,
   'testimonials': defaultTestimonials,
+  'theme': defaultTheme,
+  'site-content': defaultSiteContent,
 };
 
 export async function getData(type: string): Promise<any> {
@@ -36,7 +42,6 @@ export async function getData(type: string): Promise<any> {
     return structuredClone(defaults[type]);
   }
 
-  // Local dev: read from filesystem
   try {
     const content = await readFile(join(localDataDir, fileMap[type]), 'utf-8');
     return JSON.parse(content);

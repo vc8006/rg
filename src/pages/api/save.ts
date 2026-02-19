@@ -3,7 +3,7 @@ import { saveData } from '../../lib/data';
 
 export const prerender = false;
 
-const validTypes = ['shop-info', 'products', 'testimonials'];
+const validTypes = ['shop-info', 'products', 'testimonials', 'theme', 'site-content'];
 
 export const POST: APIRoute = async ({ request }) => {
   try {
