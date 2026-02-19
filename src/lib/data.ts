@@ -53,6 +53,7 @@ export async function saveData(type: string, data: any): Promise<void> {
     await put(`data/${filename}`, JSON.stringify(data, null, 2), {
       access: 'public',
       addRandomSuffix: false,
+      allowOverwrite: true,
       contentType: 'application/json',
     });
   } else {
