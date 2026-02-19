@@ -1,0 +1,550 @@
+---
+export const prerender = false;
+import shopInfo from '../data/shop-info.json';
+import products from '../data/products.json';
+import testimonials from '../data/testimonials.json';
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Panel | {shopInfo.name}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    @import "tailwindcss";
+    @theme {
+      --color-base: #0B1016;
+      --color-surface: #111921;
+      --color-surface-raised: #19232F;
+      --color-surface-overlay: #1F2B3A;
+      --color-border: rgba(148, 163, 184, 0.08);
+      --color-border-hover: rgba(148, 163, 184, 0.18);
+      --color-brass: #C19A6B;
+      --color-brass-light: #D4AF7A;
+      --color-brass-dark: #A07B4E;
+      --color-brass-muted: rgba(193, 154, 107, 0.12);
+      --color-emerald: #34D399;
+      --color-danger: #EF4444;
+      --color-heading: #F1F5F9;
+      --color-body: #CBD5E1;
+      --color-muted: #64748B;
+      --color-faint: #475569;
+      --font-sans: 'Inter', system-ui, sans-serif;
+    }
+    body { font-family: var(--font-sans); }
+    .admin-input {
+      width: 100%;
+      background: #19232F;
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.875rem;
+      color: #F1F5F9;
+      font-size: 0.875rem;
+      transition: all 0.15s;
+    }
+    .admin-input:focus {
+      outline: none;
+      border-color: rgba(193, 154, 107, 0.4);
+      box-shadow: 0 0 0 1px rgba(193, 154, 107, 0.4);
+    }
+    .admin-input::placeholder { color: #475569; }
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
+      padding: 0.75rem 1.25rem; border-radius: 0.5rem;
+      font-size: 0.875rem; font-weight: 500;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-success { background: #065F46; color: #D1FAE5; }
+    .toast-error { background: #7F1D1D; color: #FEE2E2; }
+  </style>
+</head>
+<body class="bg-base text-body min-h-screen antialiased">
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="rounded-xl border border-border bg-surface p-8 w-full max-w-sm">
+      <div class="text-center mb-8">
+        <div class="w-10 h-10 rounded-md bg-brass-muted border border-brass/20 flex items-center justify-center text-brass font-semibold text-sm mx-auto mb-4">AG</div>
+        <h1 class="text-xl font-bold text-heading">Admin Panel</h1>
+        <p class="text-muted text-sm mt-1">Enter password to continue</p>
+      </div>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="password" class="block text-xs font-medium text-muted mb-1.5">Password</label>
+          <input type="password" id="password" class="admin-input" placeholder="Enter admin password" autofocus />
+        </div>
+        <p id="login-error" class="text-danger text-xs hidden">Incorrect password. Try again.</p>
+        <button type="submit" class="w-full bg-brass hover:bg-brass-dark text-base py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer">
+          Sign In
+        </button>
+      </form>
+      <p class="text-faint text-[11px] text-center mt-6">Default password: admin123</p>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="hidden">
+    <header class="bg-surface border-b border-border sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-md bg-brass-muted border border-brass/20 flex items-center justify-center text-brass font-semibold text-xs">AG</div>
+          <span class="text-heading text-sm font-semibold">Admin</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/" class="text-muted hover:text-heading text-xs font-medium transition-colors" target="_blank">View Site</a>
+          <button id="logout-btn" class="text-danger/70 hover:text-danger text-xs font-medium transition-colors cursor-pointer">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Tabs -->
+      <div class="flex gap-1 bg-surface rounded-lg p-1 mb-6 w-fit">
+        <button data-tab="shop-info" class="admin-tab px-4 py-2 rounded-md text-xs font-medium transition-all text-muted hover:text-heading data-[active]:bg-brass data-[active]:text-base cursor-pointer">Shop Info</button>
+        <button data-tab="products" class="admin-tab px-4 py-2 rounded-md text-xs font-medium transition-all text-muted hover:text-heading data-[active]:bg-brass data-[active]:text-base cursor-pointer">Products</button>
+        <button data-tab="testimonials" class="admin-tab px-4 py-2 rounded-md text-xs font-medium transition-all text-muted hover:text-heading data-[active]:bg-brass data-[active]:text-base cursor-pointer">Testimonials</button>
+      </div>
+
+      <!-- Shop Info Tab -->
+      <div id="tab-shop-info" class="admin-panel">
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <h2 class="text-lg font-semibold text-heading mb-1">Shop Information</h2>
+          <p class="text-muted text-sm mb-6">Update your shop details. Changes are saved directly to the data files.</p>
+          <form id="shop-info-form" class="space-y-5">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Shop Name</label><input type="text" name="name" value={shopInfo.name} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Tagline</label><input type="text" name="tagline" value={shopInfo.tagline} class="admin-input" /></div>
+            </div>
+            <div><label class="block text-xs font-medium text-muted mb-1.5">Description</label><textarea name="description" rows="2" class="admin-input resize-none">{shopInfo.description}</textarea></div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Street Address</label><input type="text" name="street" value={shopInfo.address.street} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Area</label><input type="text" name="area" value={shopInfo.address.area} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">City</label><input type="text" name="city" value={shopInfo.address.city} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">State</label><input type="text" name="state" value={shopInfo.address.state} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">PIN Code</label><input type="text" name="pin" value={shopInfo.address.pin} class="admin-input" /></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Phone</label><input type="text" name="phone" value={shopInfo.phone} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">WhatsApp</label><input type="text" name="whatsapp" value={shopInfo.whatsapp} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Email</label><input type="email" name="email" value={shopInfo.email} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Maps Embed URL</label><input type="url" name="googleMapsEmbed" value={shopInfo.googleMapsEmbed} class="admin-input" /></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Weekday Hours</label><input type="text" name="weekdays" value={shopInfo.hours.weekdays} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Weekend Hours</label><input type="text" name="weekends" value={shopInfo.hours.weekends} class="admin-input" /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Sunday Hours</label><input type="text" name="sunday" value={shopInfo.hours.sunday} class="admin-input" /></div>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-[0.15em] text-brass mb-3 mt-2">Social Media</h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Instagram</label><input type="url" name="instagram" value={shopInfo.social.instagram} class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Facebook</label><input type="url" name="facebook" value={shopInfo.social.facebook} class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">YouTube</label><input type="url" name="youtube" value={shopInfo.social.youtube} class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">WhatsApp Link</label><input type="url" name="whatsappLink" value={shopInfo.social.whatsapp} class="admin-input" /></div>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-[0.15em] text-brass mb-3 mt-2">SEO</h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Meta Title</label><input type="text" name="seoTitle" value={shopInfo.seo.title} class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Meta Description</label><input type="text" name="seoDescription" value={shopInfo.seo.description} class="admin-input" /></div>
+              </div>
+            </div>
+            <button type="submit" id="shop-save-btn" class="bg-brass hover:bg-brass-dark text-base px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Products Tab -->
+      <div id="tab-products" class="admin-panel hidden">
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-semibold text-heading mb-1">Products</h2>
+              <p class="text-muted text-sm">Manage your product listings</p>
+            </div>
+            <button id="add-product-btn" class="bg-brass hover:bg-brass-dark text-base px-4 py-2 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add Product
+            </button>
+          </div>
+          <div class="space-y-2" id="products-list">
+            {products.map((p, i) => (
+              <div class="flex items-center gap-4 bg-surface-raised rounded-lg p-3 border border-border hover:border-border-hover transition-colors" data-product-index={i}>
+                <img src={p.images[0]} alt={p.name} class="w-16 h-12 object-contain bg-surface-overlay rounded p-1" />
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-heading text-sm font-medium truncate">{p.name}</h3>
+                  <p class="text-muted text-xs">{p.category} · {p.caliber}</p>
+                </div>
+                <div class="text-right hidden sm:block">
+                  <p class="text-heading text-sm font-medium">&#8377;{p.price.toLocaleString('en-IN')}</p>
+                  <span class:list={["text-[11px] font-medium", p.inStock ? "text-emerald" : "text-danger"]}>{p.inStock ? "In Stock" : "Out of Stock"}</span>
+                </div>
+                <button class="edit-product-btn text-muted hover:text-brass transition-colors p-1.5 cursor-pointer" data-index={i}>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Product Edit Modal -->
+        <div id="product-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-start justify-center p-4 overflow-y-auto">
+          <div class="rounded-xl border border-border bg-surface w-full max-w-2xl my-8">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h3 id="modal-title" class="text-heading font-semibold">Edit Product</h3>
+              <button id="close-modal" class="text-muted hover:text-heading transition-colors cursor-pointer"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+            <form id="product-form" class="p-6 space-y-4">
+              <input type="hidden" name="index" id="product-index" />
+              <div class="grid md:grid-cols-2 gap-4">
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Product Name</label><input type="text" name="name" id="p-name" class="admin-input" required /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Slug (URL)</label><input type="text" name="slug" id="p-slug" class="admin-input" required /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Brand</label><input type="text" name="brand" id="p-brand" class="admin-input" required /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Category</label><select name="category" id="p-category" class="admin-input"><option value="Air Rifle">Air Rifle</option><option value="Air Pistol">Air Pistol</option><option value="Pellets & Ammo">Pellets & Ammo</option><option value="Accessories">Accessories</option></select></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Price (INR)</label><input type="number" name="price" id="p-price" class="admin-input" required /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Original Price</label><input type="number" name="originalPrice" id="p-originalPrice" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Caliber</label><input type="text" name="caliber" id="p-caliber" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Velocity</label><input type="text" name="velocity" id="p-velocity" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Weight</label><input type="text" name="weight" id="p-weight" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Barrel Length</label><input type="text" name="barrelLength" id="p-barrelLength" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Power Source</label><input type="text" name="powerSource" id="p-powerSource" class="admin-input" /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Image Path</label><input type="text" name="image" id="p-image" class="admin-input" placeholder="/images/products/xxx.png" /></div>
+              </div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Description</label><textarea name="description" id="p-description" rows="3" class="admin-input resize-none"></textarea></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Features (one per line)</label><textarea name="features" id="p-features" rows="4" class="admin-input resize-none" placeholder="Feature 1&#10;Feature 2"></textarea></div>
+              <div class="flex items-center gap-5">
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="inStock" id="p-inStock" class="w-3.5 h-3.5 rounded accent-brass" checked /><span class="text-xs text-muted">In Stock</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="featured" id="p-featured" class="w-3.5 h-3.5 rounded accent-brass" /><span class="text-xs text-muted">Featured</span></label>
+              </div>
+              <div class="flex items-center gap-3 pt-3 border-t border-border">
+                <button type="submit" class="bg-brass hover:bg-brass-dark text-base px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer">Save Product</button>
+                <button type="button" id="delete-product-btn" class="bg-danger/10 hover:bg-danger/20 text-danger px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hidden cursor-pointer">Delete</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonials Tab -->
+      <div id="tab-testimonials" class="admin-panel hidden">
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-semibold text-heading mb-1">Testimonials</h2>
+              <p class="text-muted text-sm">Manage customer reviews</p>
+            </div>
+            <button id="add-testimonial-btn" class="bg-brass hover:bg-brass-dark text-base px-4 py-2 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add Review
+            </button>
+          </div>
+          <div class="space-y-2" id="testimonials-list">
+            {testimonials.map((t, i) => (
+              <div class="bg-surface-raised rounded-lg p-4 border border-border hover:border-border-hover transition-colors" data-testimonial-index={i}>
+                <div class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="flex gap-0.5 mb-1.5">
+                      {Array.from({ length: 5 }).map((_, si) => (
+                        <svg class:list={["w-3.5 h-3.5", si < t.rating ? "text-brass" : "text-faint"]} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                      ))}
+                    </div>
+                    <p class="text-body text-sm truncate">{t.text}</p>
+                    <p class="text-muted text-xs mt-1">{t.name} — {t.location}</p>
+                  </div>
+                  <button class="edit-testimonial-btn text-muted hover:text-brass transition-colors p-1.5 shrink-0 cursor-pointer" data-index={i}>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Testimonial Edit Modal -->
+        <div id="testimonial-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+          <div class="rounded-xl border border-border bg-surface w-full max-w-md">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h3 id="t-modal-title" class="text-heading font-semibold">Edit Testimonial</h3>
+              <button id="close-t-modal" class="text-muted hover:text-heading transition-colors cursor-pointer"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+            <form id="testimonial-form" class="p-6 space-y-4">
+              <input type="hidden" name="index" id="t-index" />
+              <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Name</label><input type="text" name="name" id="t-name" class="admin-input" required /></div>
+                <div><label class="block text-xs font-medium text-muted mb-1.5">Location</label><input type="text" name="location" id="t-location" class="admin-input" required /></div>
+              </div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Rating (1-5)</label><input type="number" name="rating" id="t-rating" min="1" max="5" class="admin-input" required /></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Review Text</label><textarea name="text" id="t-text" rows="3" class="admin-input resize-none" required></textarea></div>
+              <div><label class="block text-xs font-medium text-muted mb-1.5">Product Name</label><input type="text" name="product" id="t-product" class="admin-input" /></div>
+              <div class="flex items-center gap-3 pt-3 border-t border-border">
+                <button type="submit" class="bg-brass hover:bg-brass-dark text-base px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer">Save</button>
+                <button type="button" id="delete-testimonial-btn" class="bg-danger/10 hover:bg-danger/20 text-danger px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hidden cursor-pointer">Delete</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ initialProducts: products, initialTestimonials: testimonials, initialShopInfo: shopInfo }}>
+    const ADMIN_PASSWORD = 'admin123';
+
+    let currentProducts = [...initialProducts];
+    let currentTestimonials = [...initialTestimonials];
+    let currentShopInfo = { ...initialShopInfo };
+
+    function showToast(message, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast toast-' + type + ' show';
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function saveToServer(dataType, data) {
+      try {
+        const res = await fetch('/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: dataType, data })
+        });
+        const result = await res.json();
+        if (result.success) {
+          showToast('Saved successfully! Page will refresh.', 'success');
+          setTimeout(() => location.reload(), 1200);
+          return true;
+        } else {
+          showToast('Error: ' + (result.error || 'Save failed'), 'error');
+          return false;
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+        return false;
+      }
+    }
+
+    // Login
+    const loginForm = document.getElementById('login-form');
+    const loginScreen = document.getElementById('login-screen');
+    const dashboard = document.getElementById('admin-dashboard');
+    const loginError = document.getElementById('login-error');
+
+    if (sessionStorage.getItem('ag_admin') === 'true') {
+      loginScreen.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (document.getElementById('password').value === ADMIN_PASSWORD) {
+        sessionStorage.setItem('ag_admin', 'true');
+        loginScreen.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+      } else {
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('ag_admin');
+      location.reload();
+    });
+
+    // Tabs
+    const tabs = document.querySelectorAll('.admin-tab');
+    const panels = document.querySelectorAll('.admin-panel');
+    tabs[0].setAttribute('data-active', '');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.removeAttribute('data-active'));
+        tab.setAttribute('data-active', '');
+        panels.forEach(p => p.classList.add('hidden'));
+        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    // Shop Info
+    document.getElementById('shop-info-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('shop-save-btn');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+
+      const fd = new FormData(e.target);
+      const data = {
+        ...currentShopInfo,
+        name: fd.get('name'),
+        tagline: fd.get('tagline'),
+        description: fd.get('description'),
+        address: {
+          street: fd.get('street'),
+          area: fd.get('area'),
+          city: fd.get('city'),
+          state: fd.get('state'),
+          pin: fd.get('pin'),
+          country: 'India'
+        },
+        phone: fd.get('phone'),
+        whatsapp: fd.get('whatsapp'),
+        email: fd.get('email'),
+        googleMapsEmbed: fd.get('googleMapsEmbed'),
+        hours: {
+          weekdays: fd.get('weekdays'),
+          weekends: fd.get('weekends'),
+          sunday: fd.get('sunday')
+        },
+        social: {
+          instagram: fd.get('instagram'),
+          facebook: fd.get('facebook'),
+          youtube: fd.get('youtube'),
+          whatsapp: fd.get('whatsappLink')
+        },
+        seo: {
+          title: fd.get('seoTitle'),
+          description: fd.get('seoDescription')
+        }
+      };
+
+      await saveToServer('shop-info', data);
+      btn.textContent = 'Save Changes';
+      btn.disabled = false;
+    });
+
+    // Products
+    const productModal = document.getElementById('product-modal');
+    const productForm = document.getElementById('product-form');
+
+    function openProductModal(product, index) {
+      document.getElementById('modal-title').textContent = index === -1 ? 'Add Product' : 'Edit Product';
+      document.getElementById('product-index').value = index;
+      document.getElementById('p-name').value = product?.name || '';
+      document.getElementById('p-slug').value = product?.slug || '';
+      document.getElementById('p-brand').value = product?.brand || '';
+      document.getElementById('p-category').value = product?.category || 'Air Rifle';
+      document.getElementById('p-price').value = product?.price || '';
+      document.getElementById('p-originalPrice').value = product?.originalPrice || '';
+      document.getElementById('p-caliber').value = product?.caliber || '';
+      document.getElementById('p-velocity').value = product?.velocity || '';
+      document.getElementById('p-weight').value = product?.weight || '';
+      document.getElementById('p-barrelLength').value = product?.barrelLength || '';
+      document.getElementById('p-powerSource').value = product?.powerSource || '';
+      document.getElementById('p-image').value = product?.images?.[0] || '';
+      document.getElementById('p-description').value = product?.description || '';
+      document.getElementById('p-features').value = (product?.features || []).join('\n');
+      document.getElementById('p-inStock').checked = product?.inStock !== false;
+      document.getElementById('p-featured').checked = product?.featured === true;
+      document.getElementById('delete-product-btn').classList.toggle('hidden', index === -1);
+      productModal.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.edit-product-btn').forEach(btn => {
+      btn.addEventListener('click', () => openProductModal(currentProducts[parseInt(btn.dataset.index)], parseInt(btn.dataset.index)));
+    });
+
+    document.getElementById('add-product-btn').addEventListener('click', () => openProductModal(null, -1));
+    document.getElementById('close-modal').addEventListener('click', () => productModal.classList.add('hidden'));
+    productModal.addEventListener('click', (e) => { if (e.target === productModal) productModal.classList.add('hidden'); });
+
+    productForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(productForm);
+      const idx = parseInt(fd.get('index'));
+      const product = {
+        slug: fd.get('slug'),
+        name: fd.get('name'),
+        brand: fd.get('brand'),
+        category: fd.get('category'),
+        caliber: fd.get('caliber'),
+        price: parseFloat(fd.get('price')),
+        originalPrice: parseFloat(fd.get('originalPrice')) || parseFloat(fd.get('price')),
+        currency: 'INR',
+        velocity: fd.get('velocity'),
+        weight: fd.get('weight'),
+        barrelLength: fd.get('barrelLength'),
+        powerSource: fd.get('powerSource'),
+        description: fd.get('description'),
+        features: fd.get('features').split('\n').filter(f => f.trim()),
+        images: [fd.get('image') || '/images/products/placeholder.png'],
+        inStock: document.getElementById('p-inStock').checked,
+        featured: document.getElementById('p-featured').checked
+      };
+
+      if (idx === -1) currentProducts.push(product);
+      else currentProducts[idx] = product;
+
+      await saveToServer('products', currentProducts);
+    });
+
+    document.getElementById('delete-product-btn').addEventListener('click', async () => {
+      const idx = parseInt(document.getElementById('product-index').value);
+      if (idx >= 0 && confirm('Delete this product?')) {
+        currentProducts.splice(idx, 1);
+        await saveToServer('products', currentProducts);
+      }
+    });
+
+    // Testimonials
+    const tModal = document.getElementById('testimonial-modal');
+    const tForm = document.getElementById('testimonial-form');
+
+    function openTModal(t, index) {
+      document.getElementById('t-modal-title').textContent = index === -1 ? 'Add Testimonial' : 'Edit Testimonial';
+      document.getElementById('t-index').value = index;
+      document.getElementById('t-name').value = t?.name || '';
+      document.getElementById('t-location').value = t?.location || '';
+      document.getElementById('t-rating').value = t?.rating || 5;
+      document.getElementById('t-text').value = t?.text || '';
+      document.getElementById('t-product').value = t?.product || '';
+      document.getElementById('delete-testimonial-btn').classList.toggle('hidden', index === -1);
+      tModal.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.edit-testimonial-btn').forEach(btn => {
+      btn.addEventListener('click', () => openTModal(currentTestimonials[parseInt(btn.dataset.index)], parseInt(btn.dataset.index)));
+    });
+
+    document.getElementById('add-testimonial-btn').addEventListener('click', () => openTModal(null, -1));
+    document.getElementById('close-t-modal').addEventListener('click', () => tModal.classList.add('hidden'));
+    tModal.addEventListener('click', (e) => { if (e.target === tModal) tModal.classList.add('hidden'); });
+
+    tForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(tForm);
+      const idx = parseInt(fd.get('index'));
+      const testimonial = {
+        id: idx === -1 ? Date.now() : currentTestimonials[idx]?.id || Date.now(),
+        name: fd.get('name'),
+        location: fd.get('location'),
+        rating: parseInt(fd.get('rating')),
+        text: fd.get('text'),
+        product: fd.get('product')
+      };
+
+      if (idx === -1) currentTestimonials.push(testimonial);
+      else currentTestimonials[idx] = testimonial;
+
+      await saveToServer('testimonials', currentTestimonials);
+    });
+
+    document.getElementById('delete-testimonial-btn').addEventListener('click', async () => {
+      const idx = parseInt(document.getElementById('t-index').value);
+      if (idx >= 0 && confirm('Delete this testimonial?')) {
+        currentTestimonials.splice(idx, 1);
+        await saveToServer('testimonials', currentTestimonials);
+      }
+    });
+  </script>
+</body>
+</html>

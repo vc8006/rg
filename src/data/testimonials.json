@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Rajesh Kumar",
+    "location": "Mumbai, Maharashtra",
+    "rating": 5,
+    "text": "Excellent shop with amazing collection of airguns. The staff is very knowledgeable and helped me choose the perfect rifle for target shooting. Highly recommended!",
+    "product": "Precihole NX-200 Athena"
+  },
+  {
+    "id": 2,
+    "name": "Amit Sharma",
+    "location": "Delhi, NCR",
+    "rating": 5,
+    "text": "Best prices and genuine products. I bought my Precihole NX-100 from here and it's been performing flawlessly. Great after-sales service too!",
+    "product": "Precihole NX-100"
+  },
+  {
+    "id": 3,
+    "name": "Priya Patel",
+    "location": "Ahmedabad, Gujarat",
+    "rating": 4,
+    "text": "Wonderful experience shopping here. They have a great range of pellets and accessories. The delivery was prompt and everything was well-packed.",
+    "product": "Precihole Club Pellets"
+  },
+  {
+    "id": 4,
+    "name": "Vikram Singh",
+    "location": "Jaipur, Rajasthan",
+    "rating": 5,
+    "text": "I've been buying airguns from this shop for years. Their expertise in the field is unmatched. Always get the best advice and quality products.",
+    "product": "Precihole SX-100 Sparrow"
+  }
+]

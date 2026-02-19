@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #FFFFFF;
+  --color-bg-alt: #F8FAFC;
+  --color-bg-muted: #F1F5F9;
+  --color-card: #FFFFFF;
+  --color-input-bg: #FFFFFF;
+
+  --color-border: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+
+  --color-heading: #0F172A;
+  --color-body: #334155;
+  --color-muted: #64748B;
+  --color-faint: #94A3B8;
+
+  --color-brand: #1B3A2D;
+  --color-brand-light: #234D3B;
+  --color-brand-muted: rgba(27, 58, 45, 0.06);
+
+  --color-brass: #8B6D3F;
+  --color-brass-light: #A68550;
+  --color-brass-bg: rgba(139, 109, 63, 0.08);
+
+  --color-green: #16A34A;
+  --color-green-bg: rgba(22, 163, 74, 0.08);
+
+  --color-red: #DC2626;
+  --color-red-bg: rgba(220, 38, 38, 0.06);
+
+  --color-dark: #0F172A;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.dark {
+  --color-bg: #0C1117;
+  --color-bg-alt: #111920;
+  --color-bg-muted: #18222D;
+  --color-card: #111920;
+  --color-input-bg: #18222D;
+
+  --color-border: #1C2736;
+  --color-border-hover: #283648;
+
+  --color-heading: #F1F5F9;
+  --color-body: #94A3B8;
+  --color-muted: #64748B;
+  --color-faint: #475569;
+
+  --color-brand: #34D399;
+  --color-brand-light: #6EE7B7;
+  --color-brand-muted: rgba(52, 211, 153, 0.1);
+
+  --color-brass-bg: rgba(139, 109, 63, 0.15);
+  --color-green-bg: rgba(22, 163, 74, 0.15);
+  --color-red-bg: rgba(220, 38, 38, 0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-bg);
+  color: var(--color-body);
+}
+
+::selection {
+  background: rgba(27, 58, 45, 0.15);
+  color: var(--color-heading);
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.04);
+}
